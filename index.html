@@ -10,9 +10,14 @@
 		<script type="text/javascript">
 			var pend = new Pendulum(document.getElementById('pendulum'));
 			pend.setPos(250, 100);
+			pend.setAngle(0);
 			pend.ballResize(20,20);
 			pend.setLength(200);
 			pend.reDraw();
+			var cur_angle = -1;
+			var myinterv = setInterval(function(){
+				pend.setAngle(cur_angle++, true);
+			},20)
 		</script>
 	</body>
 </html>
