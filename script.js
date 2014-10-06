@@ -1,8 +1,15 @@
 function Pendulum(node){
 	var style = window.getComputedStyle(node);
 	var info = {
+		global:{
+			speed: 1,
+			timer: null,
+			time: 0,
+			koef: 1
+		},
 		pendulum: {
-			angle: 0
+			angle: 0,
+			cur_angle: 0
 		},
 		start_point:{
 			x: (parseInt(style.width)/2),
@@ -49,7 +56,7 @@ function Pendulum(node){
 	init();
 
 	this.setAngle = function(ang, redraw){
-		info.start_point.angle = ang;
+		info.pendulum.angle = ang;
 		if(redraw)
 			this.reDraw();
 	}
@@ -77,7 +84,7 @@ function Pendulum(node){
 		container.style.left = info.start_point.x + 'px';
 		var middle = (info.thread.length + info.ball.height) / 2;
 		container.style.top = (info.start_point.y - middle) + 'px';
-		container.style.transform = 'rotate(' + info.start_point.angle + 'deg)';
+		container.style.transform = 'rotate(' + info.pendulum.cur_angle + 'deg)';
 
 		ball.style.width = ball.style.height = info.ball.width + 'px';
 		ball.style.borderRadius = info.ball.width/2 + 'px';
@@ -86,5 +93,33 @@ function Pendulum(node){
 
 		thread.style.top = middle*2 + 'px';
 		thread.style.height = info.thread.length + 'px';
-	}
+	};
+	this.setSpeed = function (sp){
+		info.global.speed = sp;
+		this.stop();
+		if(info.global.timer !== null)
+			this.run();
+	};
+	this.run = function(){
+		var scope = this;
+		info.global.timer = setInterval(function(){
+			info.global.time += info.global.koef;
+			if(Math.abs(info.global.time)>=50){
+				info.global.koef *= -1;
+				info.global.time = 49 * -info.global.koef;
+			}
+			var absTime = Math.abs(info.global.time)-50;
+			info.pendulum.cur_angle = (info.global.time<0?-1:1) * info.pendulum.angle * (Math.sqrt(1 - (absTime * absTime / 2500)));
+			scope.reDraw();
+		},2000/info.global.speed);
+	};
+	this.stop = function(reset){
+		clearInterval(info.global.timer);
+		info.global.timer = null;
+		if(reset){
+			info.global.time = 0;
+			info.pendulum.cur_angle = info.pendulum.angle;
+			this.setAngle(info.pendulum.angle);
+		}
+	};
 }
