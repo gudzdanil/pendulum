@@ -8,7 +8,11 @@
 		<div id='pendulum'>
 		</div>
 		<script type="text/javascript">
-			new Pendulum(document.getElementById('pendulum'));
+			var pend = new Pendulum(document.getElementById('pendulum'));
+			pend.setPos(250, 100);
+			pend.ballResize(20,20);
+			pend.setLength(200);
+			pend.reDraw();
 		</script>
 	</body>
 </html>
