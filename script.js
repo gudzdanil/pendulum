@@ -5,7 +5,8 @@ function Pendulum(node){
 			speed: 1,
 			timer: null,
 			time: 0,
-			koef: 1
+			timeDelay: 0.05,
+			g: 9.81
 		},
 		pendulum: {
 			angle: 0,
@@ -103,13 +104,8 @@ function Pendulum(node){
 	this.run = function(){
 		var scope = this;
 		info.global.timer = setInterval(function(){
-			info.global.time += info.global.koef;
-			if(Math.abs(info.global.time)>=50){
-				info.global.koef *= -1;
-				info.global.time = 49 * -info.global.koef;
-			}
-			var absTime = Math.abs(info.global.time)-50;
-			info.pendulum.cur_angle = (info.global.time<0?-1:1) * info.pendulum.angle * (Math.sqrt(1 - (absTime * absTime / 2500)));
+			info.global.time += info.global.timeDelay;
+			info.pendulum.cur_angle = info.pendulum.angle*Math.cos((Math.sqrt(info.global.g/info.thread.length)*info.global.time));
 			scope.reDraw();
 		},2000/info.global.speed);
 	};
